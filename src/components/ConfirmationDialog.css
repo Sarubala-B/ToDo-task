@@ -1,0 +1,65 @@
+/* ConfirmationDialog.css */
+.confirmation-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+  
+.confirmation-dialog {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 400px;
+    max-height: 300px;
+    overflow: auto;
+}
+.confirmation-dialog p {
+    margin: 10px 0;
+} 
+.confirmation-dialog .task-name {
+    max-width: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+    /* overflow-x: auto;  */
+    white-space: nowrap; 
+    border: 1px solid #ccc;
+    padding: 5px;
+    background-color: #f9f9f9;
+    margin-top: 10px;
+} 
+.confirmation-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+  
+.yes-button, .no-button {
+    padding: 10px 20px;
+    border: 1px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+}
+  
+.yes-button {
+    background-color: #409443;
+    color: white;
+}
+  
+.no-button {
+    background-color: #ad372f;
+    color: white;
+}
+.yes-button:hover, .no-button:hover{
+    font-weight: bold;
+}

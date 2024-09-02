@@ -1,0 +1,29 @@
+
+.custom-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 1px solid black;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+.edit-button {
+    background-color: #438a45; 
+    font-weight: bold;
+    color: white;
+    
+}
+.edit-button:hover{
+    background-color: #75b977;
+    border: 2px solid black;
+}
+.delete-button {
+    background-color: #92352f;
+    font-weight: bold;
+    color: white;
+    
+}
+.delete-button:hover{
+    background-color: #c0635d;
+    border: 2px solid black;
+}
