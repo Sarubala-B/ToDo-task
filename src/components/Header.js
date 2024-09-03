@@ -121,11 +121,11 @@ function App() {
                 <header className="App-header">
                     <h1>Todo List</h1>
                 </header>	  
-                <TaskInput 
+                {/* <TaskInput 
                 onAddTask={handleAddTask} 
                 editMode={editMode} 
                 taskToEdit={taskToEdit} 
-                />
+                /> */}
                 <Tabs 
                 activeTab={activeTab} 
                 setActiveTab={setActiveTab} 
