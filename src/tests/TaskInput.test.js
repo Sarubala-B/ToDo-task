@@ -144,3 +144,50 @@ describe('Button Component', () => {
         expect(mockOnClick).not.toHaveBeenCalled();
     });
 });
+describe('Special Character Validation', () => {
+    test('displays an error message when special characters are entered', () => {
+        render(<TaskInput onAddTask={() => {}} />);
+        
+        const inputElement = screen.getByPlaceholderText(/Enter your task.../i);
+        
+        fireEvent.change(inputElement, { target: { value: 'Task with @#$%' } });
+        
+        const errorMessage = screen.getByText('*Special Characters are not Allowed*');
+        expect(errorMessage).toBeInTheDocument();
+    });
+
+    test('removes special characters from the input value', () => {
+        render(<TaskInput onAddTask={() => {}} />);
+        
+        const inputElement = screen.getByPlaceholderText(/Enter your task.../i);
+        
+        fireEvent.change(inputElement, { target: { value: 'Task with @#$%' } });
+        
+        expect(inputElement.value).toBe('Task with ');
+    });
+
+    test('does not display an error message when valid input is provided', () => {
+        render(<TaskInput onAddTask={() => {}} />);
+        
+        const inputElement = screen.getByPlaceholderText(/Enter your task.../i);
+        
+        fireEvent.change(inputElement, { target: { value: 'Valid Task' } });
+        
+        const errorMessage = screen.queryByText('*Special Characters are not Allowed*');
+        expect(errorMessage).not.toBeInTheDocument();
+    });
+
+    test('clears the error message when the input is corrected', () => {
+        render(<TaskInput onAddTask={() => {}} />);
+        
+        const inputElement = screen.getByPlaceholderText(/Enter your task.../i);
+        
+        fireEvent.change(inputElement, { target: { value: 'Task with @#$%' } });
+        let errorMessage = screen.getByText('*Special Characters are not Allowed*');
+        expect(errorMessage).toBeInTheDocument();
+        
+        fireEvent.change(inputElement, { target: { value: 'Corrected Task' } });
+        errorMessage = screen.queryByText('*Special Characters are not Allowed*');
+        expect(errorMessage).not.toBeInTheDocument();
+    });
+});

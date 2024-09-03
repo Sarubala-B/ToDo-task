@@ -20,11 +20,11 @@ function TaskInput({ onAddTask,editMode, taskToEdit}) {
         const specialCharPattern = /[`,./<>?;':"{}[()!@#$%^&*~+=_-]/;
         if (specialCharPattern.test(value)) {
             setErrorMessage('*Special Characters are not Allowed*');
-            setTask(value.replace(specialCharPattern, ''));
+            value = value.replace(specialCharPattern, '');
         } else {
             setErrorMessage('');
-            setTask(value); 
         }
+        setTask(value); 
       };
     const handleAddTask = () => {
         const trimmedTask = task.trim().replace(/\s+/g, ' ');
