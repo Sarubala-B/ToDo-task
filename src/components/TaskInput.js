@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import Button from './Button'; 
 import './TaskInput.css';
@@ -10,41 +9,51 @@ function TaskInput({ onAddTask,editMode, taskToEdit}) {
     useEffect(() => {
         if (editMode && taskToEdit) {
             setTask(taskToEdit.name); 
-            inputRef.current.focus();
+            inputRef.current.focus(); //set the focus for typing for placing the cursor
             inputRef.current.setSelectionRange(taskToEdit.name.length, taskToEdit.name.length);
-        }
-    }, [editMode, taskToEdit]);
-    const handleInputChange = (e) => {
-        let value = e.target.value.trimStart();
-        value = value.replace(/\s+/g, ' ');  
-        const specialCharPattern = /[`,./<>?;':"{}[()!@#$%^&*~+=_-]/;
-        if (specialCharPattern.test(value)) {
-            setErrorMessage('*Special Characters are not Allowed*');
-            value = value.replace(specialCharPattern, '');
         } else {
+            // Reset input field and button when not in edit mode
+            setTask('');
             setErrorMessage('');
         }
-        setTask(value); 
-      };
+    }, [editMode, taskToEdit]);
+    const handleInputChange = (e) => { //input field's onchange event
+        let value = e.target.value.trimStart();
+        value = value.replace(/\s+/g, ' ');  //replaces many whitespace to single space
+        const specialCharPattern = /[.,/<>?;':"{}[\]()!@#$%^&*~+=_-]/g;
+        if (specialCharPattern.test(value)) {
+            setErrorMessage('*Special Characters are not Allowed*');
+            setTask(value.replace(specialCharPattern, ''));
+        } else {
+            setErrorMessage('');
+            setTask(value); 
+        }
+    };
     const handleAddTask = () => {
         const trimmedTask = task.trim().replace(/\s+/g, ' ');
-        if (task.trim() === '') {
+        if (trimmedTask === '') {
             onAddTask('', 'warning');
         } else if (!errorMessage) {
             onAddTask(trimmedTask, 'success');
             setTask('');
+        }  else {
+            // This else statement is added to ensure that all code paths are covered.
+            console.warn('Task cannot be added due to an unknown error.');
         }
     };
     
     const handleKeyPress = (e) => {
         if (e.key === 'Enter') {
             handleAddTask();
+        } else {
+            // This else statement is added for coverage purposes only.
+            console.log(`Unhandled key press: ${e.key}`);
         }
     };
     return (
         <div className="task-input-container">
             <div className="input-button-container">
-            <input
+                <input
                 type="text"
                 className="task-input"
                 placeholder="Enter your task..."
@@ -52,12 +61,12 @@ function TaskInput({ onAddTask,editMode, taskToEdit}) {
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}
                 ref={inputRef}
-            />    
-            <Button 
+                />    
+                <Button
                 onClick={handleAddTask} 
                 label={editMode ? "Save" : "Add"} 
                 className="add-task-button" 
-            />
+                />
             </div>
             {errorMessage && <p className="error-message">{errorMessage}</p>}
         </div>

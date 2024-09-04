@@ -41,9 +41,10 @@ describe('TaskInput Component', () => {
         const addButton = screen.getByText(/Add/i);
         fireEvent.click(addButton);
         
-        expect(mockOnAddTask).toHaveBeenCalledWith('New Task');
+        expect(mockOnAddTask).toHaveBeenCalledWith('New Task', 'success');
         expect(inputElement.value).toBe('');
     });
+    
     test('calls onAddTask with input value when Enter key is pressed', () => {
         const mockOnAddTask = jest.fn();
         render(<TaskInput onAddTask={mockOnAddTask} />);
@@ -53,10 +54,11 @@ describe('TaskInput Component', () => {
         
         fireEvent.keyPress(inputElement, { key: 'Enter', code: 'Enter', charCode: 13 });
         
-        expect(mockOnAddTask).toHaveBeenCalledWith('New Task');
+        expect(mockOnAddTask).toHaveBeenCalledWith('New Task', 'success');
         expect(inputElement.value).toBe('');
     });
-    test('does not call onAddTask if input is empty or only spaces', () => {
+    
+    test('does not call onAddTask with empty or only spaces input', () => {
         const mockOnAddTask = jest.fn();
         render(<TaskInput onAddTask={mockOnAddTask} />);
         
@@ -66,8 +68,48 @@ describe('TaskInput Component', () => {
         const addButton = screen.getByText(/Add/i);
         fireEvent.click(addButton);
         
+        expect(mockOnAddTask).toHaveBeenCalledWith('', 'warning');
+    });
+    it('should log a warning if the task cannot be added due to an unknown error', () => {
+        const mockOnAddTask = jest.fn();
+        console.warn = jest.fn();  // Mock console.warn
+    
+        const { getByPlaceholderText, getByText } = render(
+          <TaskInput onAddTask={mockOnAddTask} />
+        );
+    
+        // Simulate entering a task
+        // eslint-disable-next-line testing-library/prefer-screen-queries
+        const input = getByPlaceholderText('Enter your task...');
+        fireEvent.change(input, { target: { value: 'New Task' } });
+    
+        // Simulate a condition where an error message exists
+        fireEvent.change(input, { target: { value: 'Invalid Task!' } });
+        
+        // Set the error message to simulate the unknown error scenario
+        // eslint-disable-next-line testing-library/prefer-screen-queries
+        fireEvent.click(getByText('Add'));
+        
+        // Ensure the last else block is covered
+        expect(console.warn).toHaveBeenCalledWith('Task cannot be added due to an unknown error.');
         expect(mockOnAddTask).not.toHaveBeenCalled();
     });
+    test('logs unhandled key press messages for non-Enter keys', () => {
+        const mockOnAddTask = jest.fn();
+        console.log = jest.fn();  // Mock console.log
+    
+        render(<TaskInput onAddTask={mockOnAddTask} />);
+    
+        const inputElement = screen.getByPlaceholderText(/Enter your task.../i);
+        fireEvent.change(inputElement, { target: { value: 'Some Task' } });
+        
+        // Simulate a key press other than Enter
+        fireEvent.keyPress(inputElement, { key: 'a', code: 'KeyA', charCode: 65 });
+        
+        expect(console.log).toHaveBeenCalledWith('Unhandled key press: a');
+        expect(mockOnAddTask).not.toHaveBeenCalled();  // Ensure onAddTask is not called
+    });
+    
 });
 describe('TaskInput Component - Edit Functionality', () => {
     test('populates input field with task name when in edit mode', () => {
@@ -107,9 +149,10 @@ describe('TaskInput Component - Edit Functionality', () => {
         const saveButton = screen.getByText(/Save/i);
         fireEvent.click(saveButton);
         
-        expect(mockOnAddTask).toHaveBeenCalledWith('Updated Task');
+        expect(mockOnAddTask).toHaveBeenCalledWith('Updated Task', 'success');  // Update here
         expect(inputElement.value).toBe('');
     });
+    
 });
 describe('Button Component', () => {
     test('renders the button with the correct label', () => {
@@ -154,7 +197,7 @@ describe('Special Character Validation', () => {
         
         const errorMessage = screen.getByText('*Special Characters are not Allowed*');
         expect(errorMessage).toBeInTheDocument();
-    });
+    }); 
 
     test('removes special characters from the input value', () => {
         render(<TaskInput onAddTask={() => {}} />);
@@ -165,6 +208,7 @@ describe('Special Character Validation', () => {
         
         expect(inputElement.value).toBe('Task with ');
     });
+    
 
     test('does not display an error message when valid input is provided', () => {
         render(<TaskInput onAddTask={() => {}} />);

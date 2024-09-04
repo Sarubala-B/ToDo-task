@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import './Header.css';
 import TaskInput from './TaskInput';
 import Tabs from './Tabs';
@@ -15,6 +15,7 @@ function App() {
     const [taskToDelete, setTaskToDelete] = useState(null);
     const [toastMessage, setToastMessage] = useState('');
     const [toastType, setToastType] = useState('success');
+    const taskListRef = useRef(null);
 
     useEffect(() => {
         const storedTasks = localStorage.getItem('tasks');
@@ -22,18 +23,21 @@ function App() {
             setTasks(JSON.parse(storedTasks));
         }
     }, []);
+    
+    useEffect(() => {
+        if (taskListRef.current) {
+            taskListRef.current.scrollTop = 0;
+        }
+    }, [tasks]);
 
+    const handleEditTask = (task) => {
+        setEditMode(true);
+        setTaskToEdit(task);
+    };
     const handleAddTask = (taskName, type = 'success') => {
         const normalizedTaskName = taskName.trim().toLowerCase();
-        // Check for duplicate task
-        const isDuplicate = tasks.some(task => task.name.trim().toLowerCase() === normalizedTaskName);
-
-        if (isDuplicate) {
-            setToastMessage('Task already exists');
-            setToastType('warning');
-            return; // Prevent adding the task
-        }
-        if (type === 'warning') {
+        const isDuplicate = !editMode && tasks.some(task => task.name.trim().toLowerCase() === normalizedTaskName);
+        if (taskName.trim() === '') {
             setToastMessage('Task cannot be empty');
             setToastType('warning');
             return;
@@ -41,46 +45,70 @@ function App() {
         if (editMode) {
             if (taskName === taskToEdit.name) {
                 setToastMessage('No changes in the Task');
-                setToastType('info'); 
+                setToastType('info');
+            } else if (isDuplicate) {
+                setToastMessage('Task already exists');
+                setToastType('warning');
             } else {
-                const updatedTasks = tasks.map(task =>
-                    task === taskToEdit ? { ...task, name: taskName } : task
-                );
+                const updatedTasks = tasks.filter(task => task !== taskToEdit);
+                const editedTask = { ...taskToEdit, name: taskName };
+                updatedTasks.unshift(editedTask);
                 setTasks(updatedTasks);
                 localStorage.setItem('tasks', JSON.stringify(updatedTasks));
                 setToastMessage('Task Updated Successfully');
                 setToastType('success');
+                // Switch to 'All' tab when a new task is added
+                if (activeTab !== 'All') {
+                    setActiveTab('All');
+                }
             }
-            setEditMode(false); 
-            setTaskToEdit(null);  
+            setEditMode(false);
+            setTaskToEdit(null);
         } else {
-        const newTask = { name: taskName, status: 'In-progress' };
-        const updatedTasks = [newTask, ...tasks];
-        setTasks(updatedTasks);
-        localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-        setToastMessage('Task Added Successfully');
-        setToastType('success');
+            if (isDuplicate) {
+                setToastMessage('Task already exists');
+                setToastType('warning');
+            } else if (type === 'warning') {
+                setToastMessage('Task cannot be empty');
+                setToastType('warning');
+            } else {
+                const newTask = { name: taskName, status: 'In-progress' };
+                const updatedTasks = [newTask, ...tasks];
+                setTasks(updatedTasks);
+                localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+                setToastMessage('Task Added Successfully');
+                setToastType('success');
+                // Switch to 'All' tab when a new task is added
+                if (activeTab !== 'All') {
+                    setActiveTab('All');
+                }
+            }
         }
-    };
+    }; 
 
     const handleToastClose = () => {
         setToastMessage(''); 
     };
 
-    const handleEditTask = (task) => {
-        setEditMode(true);
-        setTaskToEdit(task);
-    };
-
     const handleToggleTaskStatus = (index) => {
         const updatedTasks = [...tasks];
         const task = updatedTasks[index];
-
-        task.status = task.status === 'In-progress' ? 'Completed' : 'In-progress';
+        const oldStatus = task.status;
+        const newStatus = oldStatus === 'In-progress' ? 'Completed' : 'In-progress';
+        task.status = newStatus;
+        
+        updatedTasks.splice(index, 1);
+        updatedTasks.unshift(task);
         setTasks(updatedTasks);
         localStorage.setItem('tasks', JSON.stringify(updatedTasks));
         setToastMessage(task.status === 'Completed' ? 'Task Marked as Completed' : 'Task Marked as In-Progress');
         setToastType('info'); // Set the type for status updates
+        // Automatically switch tabs based on the new status
+        if (activeTab === 'In-progress' && newStatus === 'Completed') {
+            setActiveTab('Completed');
+        } else if (activeTab === 'Completed' && newStatus === 'In-progress') {
+            setActiveTab('In-progress');
+        }
     };
 
     const handleDeleteTask = (taskToDelete) => {
@@ -99,6 +127,11 @@ function App() {
     const handleConfirmDelete = () => {
         if (taskToDelete) {
             handleDeleteTask(taskToDelete);
+            // Reset edit mode and clear taskToEdit
+            if (taskToDelete === taskToEdit) {
+                setEditMode(false);
+                setTaskToEdit(null);
+            }
         }
     };
   
@@ -140,7 +173,7 @@ function App() {
                 {filteredTasks.length === 0 ? (
                     <p className="no-tasks-message">No Tasks Available</p>
                     ) : (
-                    <div className="task-list">
+                    <div className="task-list" ref={taskListRef}>
                     {filteredTasks.map((task) => {
                     const originalIndex = tasks.indexOf(task);
                     return (
@@ -153,8 +186,8 @@ function App() {
                                 />
                                 <p className="task-name">{task.name}</p>
                                 <div className="task-actions">
-                                <Button label="Edit" className="edit-button" onClick={() => handleEditTask(task)}  />
-                                <Button label="Delete" className="delete-button" onClick={() => handleOpenDeleteDialog(task)} />
+                                    <Button label="Edit" className="edit-button" onClick={() => handleEditTask(task)}  />
+                                    <Button label="Delete" className="delete-button" onClick={() => handleOpenDeleteDialog(task)} />
                                 </div>
                             </div>
                         </div>
@@ -164,10 +197,10 @@ function App() {
                 )}
                 {taskToDelete && (
                     <ConfirmationDialog
-                    message={`Are you sure you want to delete this task?`}
-                    taskName={taskToDelete.name}
-                    onConfirm={handleConfirmDelete}
-                    onCancel={() => setTaskToDelete(null)}
+                        message={`Are you sure you want to delete this task?`}
+                        taskName={taskToDelete.name}
+                        onConfirm={handleConfirmDelete}
+                        onCancel={() => setTaskToDelete(null)}
                     />
                 )}
             </div>
