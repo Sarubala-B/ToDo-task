@@ -68,9 +68,9 @@ function TaskInput({ onAddTask,editMode, taskToEdit}) {
                 className="add-task-button" 
                 />
             </div>
-            {errorMessage && <p className="error-message">{errorMessage}</p>}
+            {errorMessage && <p className="error-message">{errorMessage}</p>} 
         </div>
-    );
+    ); //checks for the truthness of errorMessage and then p tag will render
 }
 
 export default TaskInput;
