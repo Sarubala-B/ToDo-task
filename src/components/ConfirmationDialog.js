@@ -1,7 +1,7 @@
-// ConfirmationDialog.js
+
 import React from 'react';
 import Button from './Button';
-import './ConfirmationDialog.css'; // Create a CSS file for styling
+import './ConfirmationDialog.css'; 
 
 function ConfirmationDialog({ message, taskName, onConfirm, onCancel }) {
   return (

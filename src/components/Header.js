@@ -8,21 +8,22 @@ import ConfirmationDialog from './ConfirmationDialog';
 import Toast from './Toast';
 
 function App() {
-    const [tasks, setTasks] = useState([]);
-    const [activeTab, setActiveTab] = useState('All');
-    const [editMode, setEditMode] = useState(false);
-    const [taskToEdit, setTaskToEdit] = useState(null);
-    const [taskToDelete, setTaskToDelete] = useState(null);
-    const [toastMessage, setToastMessage] = useState('');
-    const [toastType, setToastType] = useState('success');
-    const taskListRef = useRef(null);
+    const [tasks, setTasks] = useState([]); //TaskInput,TaskCheckbox
+    const [activeTab, setActiveTab] = useState('All'); //Tabs
+    const [editMode, setEditMode] = useState(false); //TaskInput
+    const [taskToEdit, setTaskToEdit] = useState(null); //TaskInput,Button
+    const [taskToDelete, setTaskToDelete] = useState(null);//ConfirmationDialog,Button
+    const [toastMessage, setToastMessage] = useState(''); //Toast
+    const [toastType, setToastType] = useState('success'); //Toast
+    //create reference to Dom element
+    const taskListRef = useRef(null); //scroll top
 
     useEffect(() => {
         const storedTasks = localStorage.getItem('tasks');
         if (storedTasks) {
             setTasks(JSON.parse(storedTasks));
         }
-    }, []);
+    }, []); //componentDidMount
     
     useEffect(() => {
         if (taskListRef.current) {
@@ -36,7 +37,9 @@ function App() {
     };
     const handleAddTask = (taskName, type = 'success') => {
         const normalizedTaskName = taskName.trim().toLowerCase();
-        const isDuplicate = !editMode && tasks.some(task => task.name.trim().toLowerCase() === normalizedTaskName);
+        const isDuplicate = tasks.some(task => 
+            task.name.trim().toLowerCase() === normalizedTaskName && task !== taskToEdit
+        );
         if (taskName.trim() === '') {
             setToastMessage('Task cannot be empty');
             setToastType('warning');
@@ -57,7 +60,7 @@ function App() {
                 localStorage.setItem('tasks', JSON.stringify(updatedTasks));
                 setToastMessage('Task Updated Successfully');
                 setToastType('success');
-                // Switch to 'All' tab when a new task is added
+                // Switch to 'All' tab when a  task is updated
                 if (activeTab !== 'All') {
                     setActiveTab('All');
                 }

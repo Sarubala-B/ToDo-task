@@ -5,7 +5,6 @@ import '@testing-library/jest-dom/extend-expect';
 import TaskInput from '../components/TaskInput';
 import Button from '../components/Button'; 
 
-// Mock the Button component
 jest.mock('../components/Button', () => ({ onClick, label, className }) => (
     <button onClick={onClick} className={className}>{label}</button>
 ));
@@ -72,38 +71,26 @@ describe('TaskInput Component', () => {
     });
     it('should log a warning if the task cannot be added due to an unknown error', () => {
         const mockOnAddTask = jest.fn();
-        console.warn = jest.fn();  // Mock console.warn
-    
+        console.warn = jest.fn();     
         const { getByPlaceholderText, getByText } = render(
           <TaskInput onAddTask={mockOnAddTask} />
         );
-    
-        // Simulate entering a task
         // eslint-disable-next-line testing-library/prefer-screen-queries
         const input = getByPlaceholderText('Enter your task...');
         fireEvent.change(input, { target: { value: 'New Task' } });
-    
-        // Simulate a condition where an error message exists
         fireEvent.change(input, { target: { value: 'Invalid Task!' } });
-        
-        // Set the error message to simulate the unknown error scenario
         // eslint-disable-next-line testing-library/prefer-screen-queries
         fireEvent.click(getByText('Add'));
-        
-        // Ensure the last else block is covered
         expect(console.warn).toHaveBeenCalledWith('Task cannot be added due to an unknown error.');
         expect(mockOnAddTask).not.toHaveBeenCalled();
     });
     test('logs unhandled key press messages for non-Enter keys', () => {
         const mockOnAddTask = jest.fn();
-        console.log = jest.fn();  // Mock console.log
-    
+        console.log = jest.fn();     
         render(<TaskInput onAddTask={mockOnAddTask} />);
     
         const inputElement = screen.getByPlaceholderText(/Enter your task.../i);
         fireEvent.change(inputElement, { target: { value: 'Some Task' } });
-        
-        // Simulate a key press other than Enter
         fireEvent.keyPress(inputElement, { key: 'a', code: 'KeyA', charCode: 65 });
         
         expect(console.log).toHaveBeenCalledWith('Unhandled key press: a');
