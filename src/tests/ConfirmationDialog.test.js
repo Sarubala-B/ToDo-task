@@ -6,7 +6,7 @@ import TaskCheckbox from '../components/TaskCheckbox';
 describe('ConfirmationDialog', () => {
   const message = 'Are you sure you want to delete this task?';
   const taskName = 'Test Task';
-  const onConfirm = jest.fn();
+  const onConfirm = jest.fn(); //mocking that creates a fake function
   const onCancel = jest.fn();
 
   beforeEach(() => {
