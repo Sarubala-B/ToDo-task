@@ -129,11 +129,14 @@ html,body{
 @media (max-width: 768px) {
     .MainContent {
         height: 100%;
+        margin: 0;
     }    
     .App {
+        height: 85%;
         width: 95%;
         padding: 15px;
         margin: 0;
+        
     }
     .App-header h1 {
         font-size: 24px;
