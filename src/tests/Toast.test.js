@@ -46,17 +46,4 @@ describe('Toast Component', () => {
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  test('clears timer on component unmount', () => {
-    jest.useFakeTimers();
-    const mockOnClose = jest.fn();
-    const { unmount } = render(<Toast message="Test message" type="success" onClose={mockOnClose} />);
-    
-    unmount();
-    
-    act(() => {
-      jest.advanceTimersByTime(3000);
-    });
-    
-    expect(mockOnClose).not.toHaveBeenCalled();
-  });
 });

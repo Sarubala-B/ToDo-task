@@ -9,9 +9,9 @@ describe('ConfirmationDialog', () => {
   const onConfirm = jest.fn(); //mocking that creates a fake function
   const onCancel = jest.fn();
 
-  beforeEach(() => {
+  beforeEach(() => {   
     // eslint-disable-next-line testing-library/no-render-in-setup
-    render(
+    render( //render a react component into a virtual dom for testing
       <ConfirmationDialog
         message={message}
         taskName={taskName}

@@ -74,7 +74,7 @@ describe('TaskInput Component', () => {
         console.warn = jest.fn();     
         const { getByPlaceholderText, getByText } = render(
           <TaskInput onAddTask={mockOnAddTask} />
-        );
+        ); 
         // eslint-disable-next-line testing-library/prefer-screen-queries
         const input = getByPlaceholderText('Enter your task...');
         fireEvent.change(input, { target: { value: 'New Task' } });
@@ -94,7 +94,7 @@ describe('TaskInput Component', () => {
         fireEvent.keyPress(inputElement, { key: 'a', code: 'KeyA', charCode: 65 });
         
         expect(console.log).toHaveBeenCalledWith('Unhandled key press: a');
-        expect(mockOnAddTask).not.toHaveBeenCalled();  // Ensure onAddTask is not called
+        expect(mockOnAddTask).not.toHaveBeenCalled();
     });
     
 });
@@ -136,7 +136,7 @@ describe('TaskInput Component - Edit Functionality', () => {
         const saveButton = screen.getByText(/Save/i);
         fireEvent.click(saveButton);
         
-        expect(mockOnAddTask).toHaveBeenCalledWith('Updated Task', 'success');  // Update here
+        expect(mockOnAddTask).toHaveBeenCalledWith('Updated Task', 'success');
         expect(inputElement.value).toBe('');
     });
     

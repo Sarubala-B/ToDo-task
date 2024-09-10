@@ -8,22 +8,21 @@ import ConfirmationDialog from './ConfirmationDialog';
 import Toast from './Toast';
 
 function App() {
-    const [tasks, setTasks] = useState([]); //TaskInput,TaskCheckbox
-    const [activeTab, setActiveTab] = useState('All'); //Tabs
-    const [editMode, setEditMode] = useState(false); //TaskInput
-    const [taskToEdit, setTaskToEdit] = useState(null); //TaskInput,Button
-    const [taskToDelete, setTaskToDelete] = useState(null);//ConfirmationDialog,Button
-    const [toastMessage, setToastMessage] = useState(''); //Toast
-    const [toastType, setToastType] = useState('success'); //Toast
-    //create reference to Dom element
-    const taskListRef = useRef(null); //scroll top
+    const [tasks, setTasks] = useState([]);
+    const [activeTab, setActiveTab] = useState('All');
+    const [editMode, setEditMode] = useState(false);
+    const [taskToEdit, setTaskToEdit] = useState(null);
+    const [taskToDelete, setTaskToDelete] = useState(null);
+    const [toastMessage, setToastMessage] = useState('');
+    const [toastType, setToastType] = useState('success');
+    const taskListRef = useRef(null);
 
     useEffect(() => {
         const storedTasks = localStorage.getItem('tasks');
         if (storedTasks) {
             setTasks(JSON.parse(storedTasks));
         }
-    }, []); //componentDidMount
+    }, []);
     
     useEffect(() => {
         if (taskListRef.current) {
@@ -35,11 +34,14 @@ function App() {
         setEditMode(true);
         setTaskToEdit(task);
     };
-    const handleAddTask = (taskName) => {
+    const handleAddTask = (taskName, type = 'success') => {
         const normalizedTaskName = taskName.trim().toLowerCase();
-        const isDuplicate = tasks.some(task => 
-            task.name.trim().toLowerCase() === normalizedTaskName && task !== taskToEdit
-        ); //atleast any one element should satisfy the above condition
+        const isDuplicate = !editMode && tasks.some(task => task.name.trim().toLowerCase() === normalizedTaskName);
+        if (taskName.trim() === '') {
+            setToastMessage('Task cannot be empty');
+            setToastType('warning');
+            return;
+        }
         if (editMode) {
             if (taskName === taskToEdit.name) {
                 setToastMessage('No changes in the Task');
@@ -55,7 +57,7 @@ function App() {
                 localStorage.setItem('tasks', JSON.stringify(updatedTasks));
                 setToastMessage('Task Updated Successfully');
                 setToastType('success');
-                // Switch to 'All' tab when a  task is updated
+                // Switch to 'All' tab when a new task is added
                 if (activeTab !== 'All') {
                     setActiveTab('All');
                 }
@@ -66,10 +68,9 @@ function App() {
             if (isDuplicate) {
                 setToastMessage('Task already exists');
                 setToastType('warning');
-            } else if (taskName.trim() === '') {
+            } else if (type === 'warning') {
                 setToastMessage('Task cannot be empty');
                 setToastType('warning');
-                return;
             } else {
                 const newTask = { name: taskName, status: 'In-progress' };
                 const updatedTasks = [newTask, ...tasks];
@@ -152,7 +153,7 @@ function App() {
             <div className="App">
                 <header className="App-header">
                     <h1>Todo List</h1>
-                </header>	  
+                </header>     
                 <TaskInput 
                 onAddTask={handleAddTask} 
                 editMode={editMode} 

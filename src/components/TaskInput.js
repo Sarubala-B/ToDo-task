@@ -20,7 +20,7 @@ function TaskInput({ onAddTask,editMode, taskToEdit}) {
     const handleInputChange = (e) => { //input field's onchange event
         let value = e.target.value.trimStart();
         value = value.replace(/\s+/g, ' ');  //replaces many whitespace to single space
-        const specialCharPattern = /[.,/<>?;':"{}[\]()!@#$%^&*~+=_-]/g;
+        const specialCharPattern = /[.,/<>?;':"{}[\]()!@#$%^&*~+=_]/g;
         if (specialCharPattern.test(value)) {
             setErrorMessage('*Special Characters are not Allowed*');
             setTask(value.replace(specialCharPattern, ''));
