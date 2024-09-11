@@ -54,7 +54,7 @@ function TaskInput({ onAddTask,editMode, taskToEdit}) {
                 <input
                 type="text"
                 className="task-input"
-                placeholder="Enter your task..."
+                placeholder="Enter the task"
                 value={task}
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}

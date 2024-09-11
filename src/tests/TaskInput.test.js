@@ -12,7 +12,7 @@ jest.mock('../components/Button', () => ({ onClick, label, className }) => (
 describe('TaskInput Component', () => {
     test('renders the input field', () => {
         render(<TaskInput onAddTask={() => {}} />);
-        const inputElement = screen.getByPlaceholderText(/Enter your task.../i);
+        const inputElement = screen.getByPlaceholderText(/Enter the task/i);
         expect(inputElement).toBeInTheDocument();
     });
 
@@ -24,7 +24,7 @@ describe('TaskInput Component', () => {
 
     test('allows user to enter text in the input field', () => {
         render(<TaskInput onAddTask={() => {}} />);
-        const inputElement = screen.getByPlaceholderText(/Enter your task.../i);
+        const inputElement = screen.getByPlaceholderText(/Enter the task/i);
         
         fireEvent.change(inputElement, { target: { value: 'New Task' } });
         expect(inputElement.value).toBe('New Task');
@@ -34,7 +34,7 @@ describe('TaskInput Component', () => {
         const mockOnAddTask = jest.fn();
         render(<TaskInput onAddTask={mockOnAddTask} />);
         
-        const inputElement = screen.getByPlaceholderText(/Enter your task.../i);
+        const inputElement = screen.getByPlaceholderText(/Enter the task/i);
         fireEvent.change(inputElement, { target: { value: 'New Task' } });
         
         const addButton = screen.getByText(/Add/i);
@@ -48,7 +48,7 @@ describe('TaskInput Component', () => {
         const mockOnAddTask = jest.fn();
         render(<TaskInput onAddTask={mockOnAddTask} />);
         
-        const inputElement = screen.getByPlaceholderText(/Enter your task.../i);
+        const inputElement = screen.getByPlaceholderText(/Enter the task/i);
         fireEvent.change(inputElement, { target: { value: 'New Task' } });
         
         fireEvent.keyPress(inputElement, { key: 'Enter', code: 'Enter', charCode: 13 });
@@ -61,7 +61,7 @@ describe('TaskInput Component', () => {
         const mockOnAddTask = jest.fn();
         render(<TaskInput onAddTask={mockOnAddTask} />);
         
-        const inputElement = screen.getByPlaceholderText(/Enter your task.../i);
+        const inputElement = screen.getByPlaceholderText(/Enter the task/i);
         
         fireEvent.change(inputElement, { target: { value: '   ' } });
         const addButton = screen.getByText(/Add/i);
@@ -72,9 +72,8 @@ describe('TaskInput Component', () => {
     test('logs unhandled key press messages for non-Enter keys', () => {
         const mockOnAddTask = jest.fn();
         console.log = jest.fn();     
-        render(<TaskInput onAddTask={mockOnAddTask} />);
-    
-        const inputElement = screen.getByPlaceholderText(/Enter your task.../i);
+        render(<TaskInput onAddTask={mockOnAddTask} />);   
+        const inputElement = screen.getByPlaceholderText(/Enter the task/i);
         fireEvent.change(inputElement, { target: { value: 'Some Task' } });
         fireEvent.keyPress(inputElement, { key: 'a', code: 'KeyA', charCode: 65 });
         
@@ -88,7 +87,7 @@ describe('TaskInput Component - Edit Functionality', () => {
         const taskToEdit = { name: 'Edit Task' };
         render(<TaskInput editMode={true} taskToEdit={taskToEdit} onAddTask={() => {}} />);
         
-        const inputElement = screen.getByPlaceholderText(/Enter your task.../i);
+        const inputElement = screen.getByPlaceholderText(/Enter the task/i);
         expect(inputElement.value).toBe('Edit Task');
     });
 
@@ -96,7 +95,7 @@ describe('TaskInput Component - Edit Functionality', () => {
         const taskToEdit = { name: 'Edit Task' };
         render(<TaskInput editMode={true} taskToEdit={taskToEdit} onAddTask={() => {}} />);
         
-        const inputElement = screen.getByPlaceholderText(/Enter your task.../i);
+        const inputElement = screen.getByPlaceholderText(/Enter the task/i);
         expect(inputElement.selectionStart).toBe(taskToEdit.name.length);
         expect(inputElement.selectionEnd).toBe(taskToEdit.name.length);
     });
@@ -111,21 +110,17 @@ describe('TaskInput Component - Edit Functionality', () => {
 
     test('calls onAddTask with updated task name when Save button is clicked in edit mode', () => {
         const mockOnAddTask = jest.fn();
-        const taskToEdit = { name: 'Edit Task' };
-        
-        render(<TaskInput editMode={true} taskToEdit={taskToEdit} onAddTask={mockOnAddTask} />);
-        
-        const inputElement = screen.getByPlaceholderText(/Enter your task.../i);
-        fireEvent.change(inputElement, { target: { value: 'Updated Task' } });
-        
+        const taskToEdit = { name: 'Edit Task' };        
+        render(<TaskInput editMode={true} taskToEdit={taskToEdit} onAddTask={mockOnAddTask} />);        
+        const inputElement = screen.getByPlaceholderText(/Enter the task/i);
+        fireEvent.change(inputElement, { target: { value: 'Updated Task' } });        
         const saveButton = screen.getByText(/Save/i);
-        fireEvent.click(saveButton);
-        
+        fireEvent.click(saveButton);        
         expect(mockOnAddTask).toHaveBeenCalledWith('Updated Task', 'success');
         expect(inputElement.value).toBe('');
-    });
-    
+    });    
 });
+
 describe('Button Component', () => {
     test('renders the button with the correct label', () => {
         render(<Button label="Click Me" onClick={() => {}} />);
@@ -141,67 +136,52 @@ describe('Button Component', () => {
 
     test('calls onClick handler when button is clicked', () => {
         const mockOnClick = jest.fn();
-        render(<Button label="Click Me" onClick={mockOnClick} />);
-        
+        render(<Button label="Click Me" onClick={mockOnClick} />);        
         const buttonElement = screen.getByText(/Click Me/i);
-        fireEvent.click(buttonElement);
-        
+        fireEvent.click(buttonElement);        
         expect(mockOnClick).toHaveBeenCalledTimes(1);
     });
 
     test('does not call onClick if onClick is not provided', () => {
         const mockOnClick = jest.fn();
-        render(<Button label="Click Me" />);
-        
+        render(<Button label="Click Me" />);        
         const buttonElement = screen.getByText(/Click Me/i);
-        fireEvent.click(buttonElement);
-        
+        fireEvent.click(buttonElement);        
         expect(mockOnClick).not.toHaveBeenCalled();
     });
 });
+
 describe('Special Character Validation', () => {
     test('displays an error message when special characters are entered', () => {
-        render(<TaskInput onAddTask={() => {}} />);
-        
-        const inputElement = screen.getByPlaceholderText(/Enter your task.../i);
-        
-        fireEvent.change(inputElement, { target: { value: 'Task with @#$%' } });
-        
+        render(<TaskInput onAddTask={() => {}} />);       
+        const inputElement = screen.getByPlaceholderText(/Enter the task/i);        
+        fireEvent.change(inputElement, { target: { value: 'Task with @#$%' } });        
         const errorMessage = screen.getByText('*Special Characters are not Allowed*');
         expect(errorMessage).toBeInTheDocument();
     }); 
 
     test('removes special characters from the input value', () => {
-        render(<TaskInput onAddTask={() => {}} />);
-        
-        const inputElement = screen.getByPlaceholderText(/Enter your task.../i);
-        
-        fireEvent.change(inputElement, { target: { value: 'Task with @#$%' } });
-        
+        render(<TaskInput onAddTask={() => {}} />);        
+        const inputElement = screen.getByPlaceholderText(/Enter the task/i);        
+        fireEvent.change(inputElement, { target: { value: 'Task with @#$%' } });        
         expect(inputElement.value).toBe('Task with ');
     });
     
 
     test('does not display an error message when valid input is provided', () => {
-        render(<TaskInput onAddTask={() => {}} />);
-        
-        const inputElement = screen.getByPlaceholderText(/Enter your task.../i);
-        
-        fireEvent.change(inputElement, { target: { value: 'Valid Task' } });
-        
+        render(<TaskInput onAddTask={() => {}} />);        
+        const inputElement = screen.getByPlaceholderText(/Enter the task/i);        
+        fireEvent.change(inputElement, { target: { value: 'Valid Task' } });        
         const errorMessage = screen.queryByText('*Special Characters are not Allowed*');
         expect(errorMessage).not.toBeInTheDocument();
     });
 
     test('clears the error message when the input is corrected', () => {
-        render(<TaskInput onAddTask={() => {}} />);
-        
-        const inputElement = screen.getByPlaceholderText(/Enter your task.../i);
-        
+        render(<TaskInput onAddTask={() => {}} />);        
+        const inputElement = screen.getByPlaceholderText(/Enter the task/i);        
         fireEvent.change(inputElement, { target: { value: 'Task with @#$%' } });
         let errorMessage = screen.getByText('*Special Characters are not Allowed*');
-        expect(errorMessage).toBeInTheDocument();
-        
+        expect(errorMessage).toBeInTheDocument();        
         fireEvent.change(inputElement, { target: { value: 'Corrected Task' } });
         errorMessage = screen.queryByText('*Special Characters are not Allowed*');
         expect(errorMessage).not.toBeInTheDocument();

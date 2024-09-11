@@ -128,7 +128,7 @@ html,body{
 
 @media (max-width: 768px) {
     .MainContent {
-        height: auto;
+        height: 100vh;
         min-height: 100%;
         display: flex;
         justify-content: center;
@@ -139,7 +139,7 @@ html,body{
         height: auto;  
         width: 100%;
         padding: 10px;
-        margin: 20px auto;  
+        margin: 20px ;  
     }
     .App-header h1 {
         font-size: 24px;
@@ -154,7 +154,7 @@ html,body{
 
 @media (max-width: 480px) {
     .MainContent {
-        height: auto;
+        height: 100vh;
         min-height: 100%;
         display: flex;
         justify-content: center;
@@ -165,7 +165,7 @@ html,body{
     .App {
         height: auto;  
         width: 100%;
-        margin: 20px auto;
+        margin: 20px ;
         padding: 10px;
     }
     .App-header h1 {
