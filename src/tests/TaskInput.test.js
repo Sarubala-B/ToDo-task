@@ -69,15 +69,15 @@ describe('TaskInput Component', () => {
         
         expect(mockOnAddTask).toHaveBeenCalledWith('', 'warning');
     });
-    test('logs unhandled key press messages for non-Enter keys', () => {
+    test('warns unhandled key press messages for non-Enter keys', () => {
         const mockOnAddTask = jest.fn();
-        console.log = jest.fn();     
+        console.warn = jest.fn();     
         render(<TaskInput onAddTask={mockOnAddTask} />);   
         const inputElement = screen.getByPlaceholderText(/Enter the task/i);
         fireEvent.change(inputElement, { target: { value: 'Some Task' } });
         fireEvent.keyPress(inputElement, { key: 'a', code: 'KeyA', charCode: 65 });
         
-        expect(console.log).toHaveBeenCalledWith('Unhandled key press: a');
+        expect(console.warn).toHaveBeenCalledWith('Unhandled key press: a');
         expect(mockOnAddTask).not.toHaveBeenCalled();
     });
     

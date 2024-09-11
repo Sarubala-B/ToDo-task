@@ -5,7 +5,7 @@ import './TaskInput.css';
 function TaskInput({ onAddTask,editMode, taskToEdit}) {
     const [task, setTask] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const inputRef = useRef(null);
+    const inputRef = useRef(null); //useRef avoids re-render when the value changes
     useEffect(() => {
         if (editMode && taskToEdit) {
             setTask(taskToEdit.name); 
@@ -18,7 +18,7 @@ function TaskInput({ onAddTask,editMode, taskToEdit}) {
         }
     }, [editMode, taskToEdit]);
     const handleInputChange = (e) => { //input field's onchange event
-        let value = e.target.value.trimStart();
+        let value = e.target.value.trimStart(); //prevent spaces from begining
         value = value.replace(/\s+/g, ' ');  //replaces many whitespace to single space
         const specialCharPattern = /[.,/<>?;':"{}[\]()!@#$%^&*~+=_-]/g;
         if (specialCharPattern.test(value)) {
@@ -45,7 +45,7 @@ function TaskInput({ onAddTask,editMode, taskToEdit}) {
             handleAddTask();
         } else {
             // This else statement is added for coverage purposes only.
-            console.log(`Unhandled key press: ${e.key}`);
+            console.warn(`Unhandled key press: ${e.key}`);
         }
     };
     return (
