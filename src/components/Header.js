@@ -34,9 +34,11 @@ function App() {
         setEditMode(true);
         setTaskToEdit(task);
     };
-    const handleAddTask = (taskName, type = 'success') => {
+    const handleAddTask = (taskName) => {
         const normalizedTaskName = taskName.trim().toLowerCase();
-        const isDuplicate = !editMode && tasks.some(task => task.name.trim().toLowerCase() === normalizedTaskName);
+        const isDuplicate = tasks.some(task => 
+            task.name.trim().toLowerCase() === normalizedTaskName && task !== taskToEdit
+        );
         if (taskName.trim() === '') {
             setToastMessage('Task cannot be empty');
             setToastType('warning');
@@ -67,9 +69,6 @@ function App() {
         } else {
             if (isDuplicate) {
                 setToastMessage('Task already exists');
-                setToastType('warning');
-            } else if (type === 'warning') {
-                setToastMessage('Task cannot be empty');
                 setToastType('warning');
             } else {
                 const newTask = { name: taskName, status: 'In-progress' };

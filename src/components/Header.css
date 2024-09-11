@@ -17,7 +17,7 @@ html,body{
 }
 
 .App {
-	margin: 20px;
+    margin: 20px;
     width: 50%;
     max-width: 600px;
     height: 90%;
@@ -128,15 +128,18 @@ html,body{
 
 @media (max-width: 768px) {
     .MainContent {
-        height: 100%;
-        margin: 0;
+        height: auto;
+        min-height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center; 
+        
     }    
     .App {
-        height: 85%;
-        width: 95%;
-        padding: 15px;
-        margin: 0;
-        
+        height: auto;  
+        width: 100%;
+        padding: 10px;
+        margin: 20px auto;  
     }
     .App-header h1 {
         font-size: 24px;
@@ -151,10 +154,19 @@ html,body{
 
 @media (max-width: 480px) {
     .MainContent {
-        height: 100%;
+        height: auto;
+        min-height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        overflow: hidden; 
     }   
     .App {
-        height: 95%;
+        height: auto;  
+        width: 100%;
+        margin: 20px auto;
+        padding: 10px;
     }
     .App-header h1 {
         font-size: 18px;
@@ -165,8 +177,5 @@ html,body{
     .task-container p {
         font-size: 12px; 
     }
-    .MainContent {
-        padding: 0;
-        overflow: hidden; 
-    }
+    
 }

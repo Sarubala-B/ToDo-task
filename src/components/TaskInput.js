@@ -20,7 +20,7 @@ function TaskInput({ onAddTask,editMode, taskToEdit}) {
     const handleInputChange = (e) => { //input field's onchange event
         let value = e.target.value.trimStart();
         value = value.replace(/\s+/g, ' ');  //replaces many whitespace to single space
-        const specialCharPattern = /[.,/<>?;':"{}[\]()!@#$%^&*~+=_]/g;
+        const specialCharPattern = /[.,/<>?;':"{}[\]()!@#$%^&*~+=_-]/g;
         if (specialCharPattern.test(value)) {
             setErrorMessage('*Special Characters are not Allowed*');
             setTask(value.replace(specialCharPattern, ''));
@@ -33,12 +33,10 @@ function TaskInput({ onAddTask,editMode, taskToEdit}) {
         const trimmedTask = task.trim().replace(/\s+/g, ' ');
         if (trimmedTask === '') {
             onAddTask('', 'warning');
-        } else if (!errorMessage) {
+        } else {
             onAddTask(trimmedTask, 'success');
             setTask('');
-        }  else {
-            // This else statement is added to ensure that all code paths are covered.
-            console.warn('Task cannot be added due to an unknown error.');
+            setErrorMessage(''); // Clear the error message after adding the task
         }
     };
     

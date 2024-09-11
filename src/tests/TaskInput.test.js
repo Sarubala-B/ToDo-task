@@ -69,21 +69,6 @@ describe('TaskInput Component', () => {
         
         expect(mockOnAddTask).toHaveBeenCalledWith('', 'warning');
     });
-    it('should log a warning if the task cannot be added due to an unknown error', () => {
-        const mockOnAddTask = jest.fn();
-        console.warn = jest.fn();     
-        const { getByPlaceholderText, getByText } = render(
-          <TaskInput onAddTask={mockOnAddTask} />
-        ); 
-        // eslint-disable-next-line testing-library/prefer-screen-queries
-        const input = getByPlaceholderText('Enter your task...');
-        fireEvent.change(input, { target: { value: 'New Task' } });
-        fireEvent.change(input, { target: { value: 'Invalid Task!' } });
-        // eslint-disable-next-line testing-library/prefer-screen-queries
-        fireEvent.click(getByText('Add'));
-        expect(console.warn).toHaveBeenCalledWith('Task cannot be added due to an unknown error.');
-        expect(mockOnAddTask).not.toHaveBeenCalled();
-    });
     test('logs unhandled key press messages for non-Enter keys', () => {
         const mockOnAddTask = jest.fn();
         console.log = jest.fn();     
