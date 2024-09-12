@@ -187,7 +187,7 @@ describe('toggle status', () => {
             }
             expect(screen.getByText('In-progress (1)').classList.contains('active')).toBe(true);
         }, 100);
-    });
+    }); 
 });
 
 describe('Edit Task Functionality', () => {
@@ -302,6 +302,18 @@ describe('Delete Functionality', () => {
             JSON.stringify([])
         );
     });
+    test('sets editMode to false and taskToEdit to null if the taskToDelete is the same as taskToEdit', () => {
+        const mockTasks = [{ name: 'Task 1', status: 'In-progress' }];
+        localStorage.getItem.mockReturnValue(JSON.stringify(mockTasks));       
+        render(<App />);
+        fireEvent.click(screen.getByText(/Edit/i));
+        expect(screen.getByDisplayValue('Task 1')).toBeInTheDocument();
+        fireEvent.click(screen.getByText(/Delete/i));
+        fireEvent.click(screen.getByText(/Yes/i));
+        expect(screen.queryByDisplayValue('Task 1')).not.toBeInTheDocument();
+        expect(screen.queryByText(/No changes in the Task/i)).not.toBeInTheDocument(); 
+    });
+    
 });
 
 describe('Add function', () => {
