@@ -107,6 +107,7 @@ html,body{
 }
 
 .task-name {
+    padding-left: 10px;
     word-wrap: break-word; 
     white-space: pre-wrap; 
     overflow-wrap: break-word; 
@@ -114,6 +115,7 @@ html,body{
     max-width: 100%; 
     flex-grow: 1;
     margin-right: 10px;
+    
 }
 
 .task-actions {
