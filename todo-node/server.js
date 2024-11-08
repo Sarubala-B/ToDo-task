@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const sequelize = require('./config/database'); // Adjust path if necessary
 const userRoutes = require('./routes/signup'); // Import your routes
+const todoRoutes = require ('./routes/todo')
 const app = express();
 
 // Use CORS middleware to allow requests from the frontend
@@ -12,6 +13,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use('/api', userRoutes);
+app.use('/api', todoRoutes);
 
 const PORT = 5000;
 app.listen(PORT, () => {
