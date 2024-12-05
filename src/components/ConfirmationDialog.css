@@ -23,9 +23,11 @@
     max-height: 70%;
     overflow: hidden;
 }
+
 .confirmation-dialog p {
     margin: 10px 0;
 } 
+
 .confirmation-dialog .task-name {
     max-height: 200px;
     overflow-y: auto;
@@ -35,29 +37,31 @@
     background-color: #f9f9f9;
     margin-top: 10px;
 } 
+
 .confirmation-buttons {
     margin-top: 20px;
     display: flex;
     justify-content: center;
-    gap: 20px;
+    /* gap: 20px; */
 }
   
 .yes-button, .no-button {
     padding: 10px 20px;
-    border: 1px solid black;
+    border: 1px solid white;
     border-radius: 5px;
     cursor: pointer;
 }
   
 .yes-button {
-    background-color: #409443;
+    background-color: #3ac53f;
     color: white;
 }
   
 .no-button {
-    background-color: #ad372f;
+    background-color: #ee3527;
     color: white;
 }
+
 .yes-button:hover, .no-button:hover{
     font-weight: bold;
 }
